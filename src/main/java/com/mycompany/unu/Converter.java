@@ -4,7 +4,7 @@
  */
 package com.mycompany.unu;
 
-import java.util.ArrayList;
+import static java.lang.Math.pow;
 
 /**
  *
@@ -15,11 +15,39 @@ public class Converter {
     
     int DEC_FORMAT = 1;
     int HEX_FORMAT = 2;
-    int BIN_BASE = 2;
+//    int BIN_BASE = 2;
     int HEX_BASE = 16;
     String hexDictionary = "0123456789abcdef";
-    int convertToDecimal(String value) {
+    String[] hexSymbols = {"#", "0x", "h"};
+    
+    String trim(String value) {
+        String trimmed = new String();
+        
+        return trimmed;
+    }
+    
+    int translateFromHex(char character){
+        for (int i = 0; i < hexDictionary.length(); i++) {
+            char c = this.hexDictionary.charAt(i);
+            if (character == c) {
+               return i;
+            }
+        }
         return 0;
+    }
+    
+    StringBuilder convertToDecimal(String value, int base) {
+        int valueLength = value.length() - 1;
+        int sum = 0;
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < value.length(); i++) {
+            char c = value.charAt(i);
+            int digit = translateFromHex(c);
+            sum += digit * pow(base, valueLength);
+            valueLength--;
+        }
+        result.append(sum);
+        return result;
     }
     
     char translate(int digit) {
@@ -32,21 +60,25 @@ public class Converter {
         return 0;
     }
     
-    ArrayList<Character> convertToHexadecimal (String value, int base) {
-        ArrayList<Character> hexValue = new ArrayList<Character>();
+    StringBuilder convertToHexadecimal (String value, int base) {
+        StringBuilder hexValue = new StringBuilder();
         int intValue = Integer.parseInt(value);
         int divider = base;
-        while (divider * base < intValue) {
+        while (divider * base <= intValue) {
             divider *= base;
         }
         
         int divisionResult = intValue / divider;
         int rest = intValue % divider;
         char letter = translate(divisionResult);
-        hexValue.add(letter);
+        hexValue.append(letter);
         divider /= base;
         while (divider > 0) {
             divisionResult = rest / divider;
+            rest = rest % divider;
+            divider /= base;
+            letter = translate(divisionResult);
+            hexValue.append(letter);    
         }
         
         return hexValue;
@@ -68,15 +100,16 @@ public class Converter {
         }
     }
     
-    public ArrayList<Character> convert(String value) {
+    public StringBuilder convert(String value) {
        int valueFormat = checkValueFormat(value);
-       ArrayList<Character> result = new ArrayList<Character>();
+       StringBuilder result = new StringBuilder();
        if (valueFormat == HEX_FORMAT) {
-           convertToDecimal(value);
+           result = convertToDecimal(value, HEX_BASE);
        } else {
            result = this.convertToHexadecimal(value, HEX_BASE);
        }
-       System.out.print(result);
        return result;
     }
 }
+
+//TODO: Implement trim function

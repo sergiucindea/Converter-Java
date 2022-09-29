@@ -14,8 +14,9 @@ import java.util.ArrayList;
 public class Unu {
     
     public static void main(String[] args) {
-        String inputValue = "12265";
+        String inputValue = "1000";
         Converter converter = new Converter();
-        ArrayList<Character> result = converter.convert(inputValue);
+        StringBuilder result = converter.convert(inputValue);
+        System.out.print(result);
     }
 }
