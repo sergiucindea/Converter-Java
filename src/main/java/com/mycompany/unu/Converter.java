@@ -18,15 +18,28 @@ public class Converter {
 //    int BIN_BASE = 2;
     int HEX_BASE = 16;
     String hexDictionary = "0123456789abcdef";
-    String[] hexSymbols = {"#", "0x", "h"};
+    String[] hexSymbols = {"#", "x", "h"};
     
-    String trim(String value) {
+    String trimSymbols(String value) {
         String trimmed = new String();
-        
+        for (int i = 0; i < value.length(); i++) {
+            boolean OK = true;
+            for (int j = 0; j < hexSymbols.length; j++) {
+                String digit = value.substring(i, i+1);
+                if ((digit != hexSymbols[j])) {
+                    if (j == hexSymbols.length-1 && OK) {
+                        trimmed += value.charAt(i);
+                    }
+                } else {
+                    OK = false;
+                }
+            } 
+        }
+        System.out.printf("%s\n",trimmed );
         return trimmed;
     }
     
-    int translateFromHex(char character){
+    private int translateFromHex(char character){
         for (int i = 0; i < hexDictionary.length(); i++) {
             char c = this.hexDictionary.charAt(i);
             if (character == c) {
@@ -36,7 +49,7 @@ public class Converter {
         return 0;
     }
     
-    StringBuilder convertToDecimal(String value, int base) {
+    private StringBuilder convertToDecimal(String value, int base) {
         int valueLength = value.length() - 1;
         int sum = 0;
         StringBuilder result = new StringBuilder();
@@ -50,7 +63,7 @@ public class Converter {
         return result;
     }
     
-    char translate(int digit) {
+    private char translate(int digit) {
         for (int i = 0; i < hexDictionary.length(); i++) {
             char c = this.hexDictionary.charAt(i);
             if (digit == i) {
@@ -60,7 +73,7 @@ public class Converter {
         return 0;
     }
     
-    StringBuilder convertToHexadecimal (String value, int base) {
+    private StringBuilder convertToHexadecimal (String value, int base) {
         StringBuilder hexValue = new StringBuilder();
         int intValue = Integer.parseInt(value);
         int divider = base;
@@ -84,7 +97,7 @@ public class Converter {
         return hexValue;
     }
     
-    int checkValueFormat(String value) {
+    private int checkValueFormat(String value) {
         String[] hexStartSymbols = {"#", "0x"};
         char hexEndSymbol = 'h';
         for (String startSymbol: hexStartSymbols) {
@@ -101,7 +114,9 @@ public class Converter {
     }
     
     public StringBuilder convert(String value) {
+       trimSymbols(value);
        int valueFormat = checkValueFormat(value);
+       System.out.print(valueFormat);
        StringBuilder result = new StringBuilder();
        if (valueFormat == HEX_FORMAT) {
            result = convertToDecimal(value, HEX_BASE);

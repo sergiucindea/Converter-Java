@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Unu {
     
     public static void main(String[] args) {
-        String inputValue = "1000";
+        String inputValue = "0x1000";
         Converter converter = new Converter();
         StringBuilder result = converter.convert(inputValue);
         System.out.print(result);
